@@ -3,18 +3,17 @@ import numpy as np
 from math import sqrt
 
 #parameters
-r = 144//2
+r = 144
 WIDTH = 640*2
 HEIGHT = 400*2
 SIZE = r*2+1
 color1 = np.array([162, 97, 161])
-color2 = np.array([162, 97, 161])
 color3 = np.array([255, 255, 255])
 viewer = np.array([0, 0, 10])
-ambi_const = 0.05
+ambi_const = 0.10
 diff_const = 1
-spec_const = 1
-alpha = 100
+spec_const = 0.05
+alpha = 1
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -50,7 +49,7 @@ def picture(poz):
                 N = normalize(np.array([x, y, z]))
                 L = normalize(light - N)
                 diffuse = max(0, np.dot(L, N))
-                shade[i][j] += color2 * diffuse * diff_const
+                shade[i][j] += color1 * diffuse * diff_const
 
                 #specular
                 R = normalize(2 * diffuse * N - L)
@@ -60,7 +59,10 @@ def picture(poz):
             pixel(sheet, shade[i][j], [i, j])
     screen.blit(sheet, ((WIDTH-SIZE)//2, (HEIGHT-SIZE)//2))
 
-picture([-2, -2, 4])
+x = -2
+y = -2
+z = 4
+picture([x, y, z])
 
 running = True
 while running:
@@ -75,6 +77,29 @@ while running:
                 z = 4
                 print(x, y, z)
                 picture([x, y, z])
+        if event.type == pygame.KEYDOWN:
+            match event.key:
+                case pygame.K_1:
+                    color1 = np.array([162, 97, 161])
+                    ambi_const = 0.10
+                    diff_const = 1
+                    spec_const = 0.05
+                    alpha = 1
+                    picture([x, y, z])
+                case pygame.K_2:
+                    color1 = np.array([91, 177, 75])
+                    ambi_const = 0.16
+                    diff_const = 1
+                    spec_const = 0.15
+                    alpha = 100
+                    picture([x, y, z])
+                case pygame.K_3:
+                    color1 = np.array([178, 56, 105])
+                    ambi_const = 0.20
+                    diff_const = 1.3
+                    spec_const = 0.5
+                    alpha = 1
+                    picture([x, y, z])
         if event.type == pygame.QUIT:
             running = False
     pygame.display.update()
